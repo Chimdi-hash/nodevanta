@@ -43,3 +43,10 @@ Possible outcomes are strictly bounded to:
 ## Security
 
 NodeVanta enforces strict schema checks, bounded data retrievals, and deterministic consensus on nondeterministic outputs. It bounds all inputs and fetched context to prevent excessive token usage or memory exhaustion.
+
+## Deployment
+
+**Studio Contract Address**: `0x2Ab9bcCD90b670A5205bD4Feaf77BEB70ac98Cf3`
+
+[View on GenLayer Studio Explorer](https://explorer-studio.genlayer.com/address/0x2Ab9bcCD90b670A5205bD4Feaf77BEB70ac98Cf3)
+
