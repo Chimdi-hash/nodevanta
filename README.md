@@ -46,7 +46,7 @@ NodeVanta enforces strict schema checks, bounded data retrievals, and determinis
 
 ## Deployment
 
-**Studio Contract Address**: `0x2Ab9bcCD90b670A5205bD4Feaf77BEB70ac98Cf3`
+**Studio Contract Address**: `0x50631fecE3B8af1B6CAd59c1537c253AB04A3ec4`
 
-[View on GenLayer Studio Explorer](https://explorer-studio.genlayer.com/address/0x2Ab9bcCD90b670A5205bD4Feaf77BEB70ac98Cf3)
+[View on GenLayer Studio Explorer](https://explorer-studio.genlayer.com/address/0x50631fecE3B8af1B6CAd59c1537c253AB04A3ec4)
 
