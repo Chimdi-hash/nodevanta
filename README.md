@@ -34,9 +34,9 @@ Possible outcomes are strictly bounded to:
 
 ## Deployment
 
-**Studio Contract Address**: `0x50631fecE3B8af1B6CAd59c1537c253AB04A3ec4`
+**Studio Contract Address**: `0x048001B82018B5341DdE7B2f79F06BA61374E11D`
 
-[View on GenLayer Studio Explorer](https://explorer-studio.genlayer.com/address/0x50631fecE3B8af1B6CAd59c1537c253AB04A3ec4)
+[View on GenLayer Studio Explorer](https://explorer-studio.genlayer.com/address/0x048001B82018B5341DdE7B2f79F06BA61374E11D)
 
 ## Security
 
