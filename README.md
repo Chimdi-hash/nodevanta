@@ -1,48 +1,36 @@
 # NodeVanta Intelligent Contract
 
-NodeVanta is a policy-driven node operation validator built for the GenLayer network. It serves as an evaluation primitive that answers a critical operational question:
+NodeVanta is a policy-driven multi-source network operation auditor built for the GenLayer network. It serves as an evaluation primitive that answers a critical operational question:
 
-> **Did the permitted node operator execute the exact event defined by the policy configuration at the relevant time?**
+> **Did the permitted node operator execute the exact events defined by the policy configuration across all monitored endpoints?**
 
-By leveraging GenLayer's unique Optimistic Democracy and Equivalence Principle, NodeVanta fetches external data endpoints (policies and operation telemetry) non-deterministically and evaluates them using a specialized Intelligence Engine (LLM).
+By leveraging GenLayer's unique Optimistic Democracy and Equivalence Principle, NodeVanta fetches telemetry from up to 5 external data endpoints non-deterministically and evaluates them using a specialized Intelligence Engine (LLM).
 
 ## Overview
 
-`NodeVanta.py` handles semantic policy validation. It captures an operation telemetry task and fetches necessary context (policy rules and event logs). It evaluates this context strictly to determine if the event complies with the network's rules, ensuring that node operators cannot spoof operational logs or operate outside of their allowed constraints.
+Unlike legacy evaluation contracts that rely on strict two-source or retry-heavy architectures, `NodeVanta.py` introduces a dynamic, multi-source telemetry model with simplified persistence. It allows an operator to register a `task_id`, up to 5 telemetry endpoints, and a set of policy rules. The contract then evaluates this context strictly to determine if the event complies with the network's rules.
 
 Possible outcomes are strictly bounded to:
-- `APPROVED`: Definitive proof that the operation matched the active policy.
-- `REJECTED`: Definitive proof that the operation violated the policy, was executed by the wrong actor, or occurred outside the valid timeframe.
+- `COMPLIANT`: Definitive proof that the operation matched the active policy across all telemetry sources.
+- `VIOLATION`: Definitive proof that the operation violated the policy, was executed by the wrong actor, or contradicted rules.
 - `INCONCLUSIVE`: Ambiguous, conflicting, or missing context (e.g., a data endpoint was unreachable).
 
 ## Core Workflow
 
-1. **Initialization**: A node session is created via `initialize_session` containing the policy endpoint and operation data endpoint.
-2. **Processing**: The session owner invokes `process_session`.
-3. **Data Retrieval & Evaluation**: NodeVanta pulls context data via nondeterministic HTTP requests and evaluates it with its intelligence engine.
-4. **Consensus**: Results are finalized through GenLayer's consensus mechanism based on the Equivalence Principle, where leader and validator nodes independently verify the operation.
+1. **Registration**: A node session is created via `register_task` specifying the `task_id`, `operator_id`, a list of 1 to 5 `endpoints`, and the `policy_rules`.
+2. **Auditing**: The session owner invokes `audit_task(task_id)`.
+3. **Data Retrieval & Evaluation**: NodeVanta pulls all registered endpoints via nondeterministic HTTP requests and evaluates the combined telemetry log with its intelligence engine. It returns both an outcome and a generated reasoning string.
+4. **Consensus**: Results are finalized through GenLayer's consensus mechanism based on the Equivalence Principle, where leader and validator nodes independently verify the operation without complex intermediate observation state-saving.
 
 ## API Methods
 
 ### Public Write Methods
-- `initialize_session(task_payload: str) -> str`: Initializes a new node validation task with a JSON payload defining the policy and operation data.
-- `process_session(task_id: str)`: Evaluates a pending session and initiates the consensus validation.
-- `reassess_session(task_id: str)`: Retries a session that failed due to temporary network issues (up to 3 retries).
+- `register_task(task_id: str, operator_id: str, endpoints: list, policy_rules: str)`: Registers a new auditing task.
+- `audit_task(task_id: str)`: Evaluates a pending task and initiates the consensus validation.
 
 ### Public View Methods
-- `get_session(task_id: str) -> dict`: Retrieves the raw session details.
-- `get_session_result(task_id: str) -> dict`: Retrieves the final intelligence outcome (`APPROVED`, `REJECTED`, or `INCONCLUSIVE`) and telemetry hashes.
-- `is_concluded(task_id: str) -> bool`: Checks if a session has been successfully evaluated.
-
-## Requirements & Deployment
-
-- Built strictly for the **GenLayer Studio network**.
-- Requires the `genlayer` Python SDK.
-- Complies with GenVM Linter rules.
-
-## Security
-
-NodeVanta enforces strict schema checks, bounded data retrievals, and deterministic consensus on nondeterministic outputs. It bounds all inputs and fetched context to prevent excessive token usage or memory exhaustion.
+- `get_task(task_id: str) -> dict`: Retrieves the raw task details.
+- `get_audit_result(task_id: str) -> dict`: Retrieves the final intelligence outcome (`COMPLIANT`, `VIOLATION`, or `INCONCLUSIVE`), the LLM reasoning, and the telemetry snapshots.
 
 ## Deployment
 
@@ -50,3 +38,6 @@ NodeVanta enforces strict schema checks, bounded data retrievals, and determinis
 
 [View on GenLayer Studio Explorer](https://explorer-studio.genlayer.com/address/0x50631fecE3B8af1B6CAd59c1537c253AB04A3ec4)
 
+## Security
+
+NodeVanta enforces strict schema checks, bounded data retrievals, and deterministic consensus on nondeterministic outputs. It bounds all inputs and fetched context to prevent excessive token usage or memory exhaustion.
